@@ -4,35 +4,51 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
 )
 
-var rootDirectory, err2 = os.Getwd()
+
+var history []string
 
 func main (){
 	reader := bufio.NewReader(os.Stdin)
 
 	for{
-		fmt.Print("> ", rootDirectory ," ")
+
+		var rootDirectory, rootError = os.Getwd()
+
+		if rootError != nil {
+			log.Fatalf("Failed to get current directory: %v", rootError)
+		}
+
+		fmt.Print("> ", rootDirectory ," % ")
 
 		// read the input 
 		input, err := reader.ReadString('\n')
+
+		// adding to my history of commands 
+		history = append(history, input)
+
 		if err != nil {
-			fmt.Println(os.Stderr, err)
+			fmt.Fprint(os.Stderr, err)
 		}
 
-		// Handle the execution of the input.
+		// handle the execution of the input
         if err = executeInput(input); err != nil {
-            fmt.Println(os.Stderr, err)
+            fmt.Fprint(os.Stderr, err)
         }
+
+		fmt.Println(history)
 
 	}
 
 }
 
 func executeInput (input string ) error{
+	
 	// removing the new line character
 	input = strings.TrimSuffix(input,"\n")
 
