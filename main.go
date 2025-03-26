@@ -2,18 +2,20 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 )
 
+var rootDirectory, err2 = os.Getwd()
 
 func main (){
 	reader := bufio.NewReader(os.Stdin)
 
 	for{
-		fmt.Print("> ")
+		fmt.Print("> ", rootDirectory ," ")
 
 		// read the input 
 		input, err := reader.ReadString('\n')
@@ -35,6 +37,18 @@ func executeInput (input string ) error{
 	input = strings.TrimSuffix(input,"\n")
 
 	args := strings.Split(input, " ")
+	
+	switch args[0] {
+	case "cd":  
+
+    	if len(args) < 2 {
+        	return  errors.New("path required")
+    	}
+
+    	return os.Chdir(args[1])
+	case "exit": 
+		 os.Exit(0)
+	}
 
 	cmd := exec.Command(args[0], args[1:]...)
 	
