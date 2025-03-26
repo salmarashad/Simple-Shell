@@ -34,8 +34,9 @@ func executeInput (input string ) error{
 	// removing the new line character
 	input = strings.TrimSuffix(input,"\n")
 
-	
-	cmd := exec.Command(input)
+	args := strings.Split(input, " ")
+
+	cmd := exec.Command(args[0], args[1:]...)
 	
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
